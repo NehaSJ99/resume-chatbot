@@ -1,0 +1,24 @@
+# Ignore environment variables
+.env
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore virtual environment (if using venv)
+venv/
+.env/
+
+# Ignore FAISS index and models
+models/faiss_index.bin
+models/sentence_model/
+
+# Ignore dataset and personal files
+data/Neha_Jagtap_Resume.docx
+
+# Ignore log files and system files
+*.log
+.DS_Store
+*.swp
