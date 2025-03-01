@@ -1,0 +1,7 @@
+flask
+faiss-cpu
+numpy
+python-dotenv
+google-generativeai
+sentence-transformers
+docx
