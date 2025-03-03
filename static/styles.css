@@ -1,0 +1,96 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.chat-container {
+    width: 400px;
+    height: 500px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-box {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.message {
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    max-width: 80%;
+}
+
+.user-message {
+    background-color: #007bff;
+    color: white;
+    align-self: flex-end;
+}
+
+.bot-message {
+    background-color: #e5e5e5;
+    color: black;
+    align-self: flex-start;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ddd;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.chat-input button {
+    padding: 10px 15px;
+    background: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+/* 💬 Typing Indicator */
+.typing {
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+    font-style: italic;
+    margin-top: 10px;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+}
+
+/* 🚫 Hidden by Default */
+.hidden {
+    display: none;
+}
+
+/* ⌨ Typing Dots Animation */
+@keyframes typing-dots {
+    0% { content: "Neha's Resume Chatbot is typing"; }
+    33% { content: "Neha's Resume Chatbot is typing."; }
+    66% { content: "Neha's Resume Chatbot is typing.."; }
+    100% { content: "Neha's Resume Chatbot is typing..."; }
+}
+
+.typing::after {
+    content: "";
+    animation: typing-dots 1.5s infinite steps(1);
+}

@@ -1,57 +1,36 @@
-import os
-import faiss
-import numpy as np
-import docx
-import dotenv
-from flask import Flask, request, jsonify
-from google.generativeai import GenerativeModel
-from sentence_transformers import SentenceTransformer
+from flask import Flask, request, jsonify, render_template
+from flask_cors import CORS
+from gemini_logic import get_resume_response
+import traceback
 
-# Load environment variables
-dotenv.load_dotenv()
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# Load the document and extract text
-def load_document(doc_path):
-    doc = docx.Document(doc_path)
-    return " ".join([para.text for para in doc.paragraphs if para.text.strip()])
+app = Flask(__name__, static_folder="static", template_folder="templates")  
+CORS(app)  # ✅ Allow frontend requests from other websites
 
-# Initialize FAISS index and store/retrieve embeddings
-def create_or_load_faiss_index(sentences, model, index_path="models/faiss_index.bin"):
-    embedding_dim = model.get_sentence_embedding_dimension()
-    if os.path.exists(index_path):
-        index = faiss.read_index(index_path)
-        return index, None  # Load existing index
-    else:
-        embeddings = model.encode(sentences, convert_to_numpy=True)
-        index = faiss.IndexFlatL2(embedding_dim)
-        index.add(embeddings)
-        faiss.write_index(index, index_path)  # Save the index
-        return index, embeddings
+# ✅ Serve the chat UI when accessing "/"
+@app.route('/')
+def serve_chat_ui():
+    return render_template("index.html")  # Serves the HTML page
 
-# Retrieve top-k relevant sentences
-def retrieve_context(query, sentences, index, model, k=3):
-    query_embedding = model.encode([query], convert_to_numpy=True)
-    distances, indices = index.search(query_embedding, k)
-    return " ".join([sentences[i] for i in indices[0]])
+# ✅ API Endpoint for Gemini
+@app.route("/api/gemini", methods=["POST"])
+def chat():
+    data = request.get_json()
+    if not data or "message" not in data:
+        return jsonify({"reply": "⚠️ Please provide a valid message in JSON format."}), 400
 
-# Initialize API & models
-app = Flask(__name__)
-resume_text = load_document("data/Neha_Jagtap_Resume.docx")
-sentences = resume_text.split(". ")
-embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+    user_message = data["message"].strip()
+    if not user_message:
+        return jsonify({"reply": "⚠️ Message cannot be empty."}), 400
 
-faiss_index, _ = create_or_load_faiss_index(sentences, embedding_model)
+    try:
+        reply_text = get_resume_response(user_message)
+        return jsonify({"reply": reply_text})
 
-# Initialize Google Gemini API
-gemini_model = GenerativeModel("gemini-1.0", api_key=GEMINI_API_KEY)
-
-@app.route("/ask", methods=["POST"])
-def ask_question():
-    user_query = request.json.get("query")
-    context = retrieve_context(user_query, sentences, faiss_index, embedding_model)
-    response = gemini_model.generate_text(f"Based on the following resume context: {context}\n\nAnswer the question: {user_query}")
-    return jsonify({"response": response.text})
+    except Exception as e:
+        print("❌ ERROR in /api/gemini:", str(e))
+        traceback.print_exc()  # ✅ Print full error details
+        return jsonify({"error": f"❌ Internal Server Error: {str(e)}"}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
