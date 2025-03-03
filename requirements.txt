@@ -1,8 +1,8 @@
 flask
+flask-cors
 faiss-cpu
 numpy
 python-dotenv
 google-generativeai
 sentence-transformers
-docx
-flask-cors
+python-docx

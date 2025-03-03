@@ -1,7 +1,7 @@
 import os
 import faiss
 import numpy as np
-import docx
+from docx import Document
 import dotenv
 import google.generativeai as genai
 from sentence_transformers import SentenceTransformer
@@ -15,7 +15,7 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 # ✅ Load the resume document and extract text
 def load_document(doc_path):
-    doc = docx.Document(doc_path)
+    doc = Document(doc_path)
     return " ".join([para.text.strip() for para in doc.paragraphs if para.text.strip()])
 
 # ✅ Initialize FAISS index and store/retrieve embeddings
@@ -39,7 +39,7 @@ def create_or_load_faiss_index(sentences, model, index_path="models/faiss_index.
     return index, embeddings
 
 # ✅ Retrieve relevant information from resume
-def retrieve_context(query, sentences, index, model, k=3):
+def retrieve_context(query, sentences, index, model, k=5):
     query_embedding = model.encode([query], convert_to_numpy=True)
     distances, indices = index.search(query_embedding, k)
 
