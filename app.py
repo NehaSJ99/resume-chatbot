@@ -6,7 +6,7 @@ import os
 
 
 app = Flask(__name__, static_folder="static", template_folder="templates")  
-CORS(app)  # ✅ Allow frontend requests from other websites
+CORS(app, resources={r"/api/*": {"origins": "*"}})  # ✅ Allow frontend requests from other websites
 
 # ✅ Serve the chat UI when accessing "/"
 @app.route('/')

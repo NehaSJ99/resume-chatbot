@@ -6,7 +6,7 @@ async function sendMessage() {
     document.getElementById("user-input").value = "";
 
     try {
-        let response = await fetch("http://127.0.0.1:5000/api/gemini", {  
+        let response = await fetch("https://resume-chatbot-m3kq.onrender.com/api/gemini", {  
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: userInput })  
