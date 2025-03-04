@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from gemini_logic import get_resume_response
 import traceback
+import os
 
 
 app = Flask(__name__, static_folder="static", template_folder="templates")  
