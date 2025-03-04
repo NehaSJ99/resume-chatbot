@@ -6,3 +6,4 @@ python-dotenv
 google-generativeai
 sentence-transformers
 python-docx
+gunicorn
